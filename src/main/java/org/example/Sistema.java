@@ -6,15 +6,14 @@ import java.util.*;
 class Sistema {
     private static final String ARCHIVO = "datos.csv";
 
-    // Umbrales para generar alertas
-    private static final double UMBRAL_PLAGA = 20.0;       // % infestación
-    private static final double UMBRAL_AGROQUIMICO = 5.0;  // litros por aplicación
-    private static final double UMBRAL_AGUA = 0.5;         // mg/L
-    private static final double UMBRAL_SUELO_MIN = 20.0;   // % humedad mínima
+    private static final double UMBRAL_PLAGA = 20.0;
+    private static final double UMBRAL_AGROQUIMICO = 5.0;
+    private static final double UMBRAL_AGUA = 0.5;
+    private static final double UMBRAL_SUELO_MIN = 20.0;
 
     private final List<Parcela> parcelas = new ArrayList<>();
-    private final Queue<String> alertas = new ArrayDeque<>();              // COLA
-    private final GrafoCuenca cuenca = new GrafoCuenca();                  // GRAFO
+    private final Queue<String> alertas = new ArrayDeque<>();
+    private final GrafoCuenca cuenca = new GrafoCuenca();
     private final Scanner sc = new Scanner(System.in);
 
     void iniciar() {
@@ -56,7 +55,6 @@ class Sistema {
         System.out.println("Alertas pendientes: " + alertas.size());
     }
 
-    // ---------- 1. Parcelas ----------
     private void registrarParcela() {
         System.out.print("Id de la parcela: ");
         String id = sc.nextLine().trim().toUpperCase();
@@ -76,7 +74,6 @@ class Sistema {
         System.out.println("Parcela registrada.");
     }
 
-    // ---------- 2. Mediciones (COLA) ----------
     private void registrarMedicion() {
         System.out.print("Id de la parcela: ");
         Parcela p = buscarParcela(sc.nextLine().trim().toUpperCase());
@@ -124,7 +121,6 @@ class Sistema {
         };
     }
 
-    // ---------- 3. Atender alerta (COLA) ----------
     private void atenderAlerta() {
         String a = alertas.poll();
         if (a == null) {
@@ -135,7 +131,6 @@ class Sistema {
         }
     }
 
-    // ---------- 4. Resumen ----------
     private void resumen() {
         if (parcelas.isEmpty()) {
             System.out.println("No hay parcelas.");
@@ -160,7 +155,6 @@ class Sistema {
         }
     }
 
-    // ---------- 5. Contaminación aguas abajo (GRAFO + RECURSIVIDAD) ----------
     private void simularContaminacion() {
         System.out.print("¿Desde qué parcela se contamina? ");
         String origen = sc.nextLine().trim().toUpperCase();
@@ -191,7 +185,6 @@ class Sistema {
         cuenca.getAdyacencia().forEach((k, v) -> System.out.println("  " + k + " -> " + v));
     }
 
-    // ---------- Persistencia offline ----------
     private void guardar() {
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARCHIVO))) {
             for (Parcela p : parcelas) {
@@ -233,17 +226,15 @@ class Sistema {
         }
     }
 
-    // ---------- Buscar una parcela por su id ----------
     private Parcela buscarParcela(String id) {
         for (Parcela p : parcelas) {
             if (p.id.equals(id)) {
                 return p;
             }
         }
-        return null; // no existe
+        return null;
     }
 
-    // ---------- Lectura segura ----------
     private int leerEntero(String msg) {
         while (true) {
             System.out.print(msg);
